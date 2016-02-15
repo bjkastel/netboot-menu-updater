@@ -108,6 +108,7 @@ config.read(['/etc/netboot-menu-updater.cfg', '~/.netboot-menu-updater.cfg', './
 targetDir = config.get('DEFAULT', 'targetDir')
 tftpdIP = config.get('DEFAULT', 'tftpdIP')
 pxelinux = config.get('DEFAULT', 'pxelinux')
+menu = config.get('DEFAULT', 'menu')
 
 print "%s %s" % ("Target directory:", targetDir)
 
@@ -179,10 +180,20 @@ for category, distributions in categories.iteritems():
     pxeconfig.close();
 
 ##########################
-print "%s" % ("Download PXE Linux loader") 
+print "%s" % ("Download PXE Linux loader")
 
 remoteFile = urllib.urlopen(pxelinux)
 localFile  = open("%s/%s" % (targetDir, "pxelinux.0"), 'w')
+localFile.write(remoteFile.read())
+remoteFile.close()
+localFile.close()
+print "Done"
+
+##########################
+print "%s" % ("Download boot menu renderer")
+
+remoteFile = urllib.urlopen(menu)
+localFile  = open("%s/%s" % (targetDir, "pxelinux-menu.c32"), 'w')
 localFile.write(remoteFile.read())
 remoteFile.close()
 localFile.close()
